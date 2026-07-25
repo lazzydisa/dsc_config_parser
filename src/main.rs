@@ -28,7 +28,11 @@ fn main() {
 
     println!("The result is:");
     for i in vec {
-        println!("{}: {}", i.0, i.1);
+        if i != ("".to_string(), "".to_string()) {
+            println!("{}: {}", i.0, i.1);
+        } else {
+            println!("-- empty line --");
+        }
     }
 }
 
@@ -39,8 +43,8 @@ fn parser(line: &str) -> (String, String) {
 
     // skip comment
     'main: for c in line.chars() {
-        if c == '#' {
-            break 'main;
+        if c == '#' || c == '\n' {
+            continue 'main;
         }
         else {
             // getting variable's name
