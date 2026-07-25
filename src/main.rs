@@ -10,6 +10,7 @@
  * ```
  *  # it's a comment
  *  msg: "hello world"
+ * ```
  */
 
 fn main() {
@@ -40,36 +41,33 @@ fn parser(line: &str) -> (String, String) {
     'main: for c in line.chars() {
         if c == '#' {
             break 'main;
-        } 
+        }
         else {
             // getting variable's name
             'var: for var in line.chars() { 
                 if var != ' ' && var != ':' && var != '#' {
                     name.push(var);
-                }
-
-                if var == ':' {
+                } else {
                     break 'var;
                 }
             }
 
             // getting variable's value
-            let mut test = false;
+            let mut test1 = false;
+            let mut test2 = false;
             'val: for val in line.chars() {
-                while val != ':' && val != '#' && test == false {
+                if val != ':' && test1 == false {
                     continue 'val;
                 }
 
-                test = true;
+                test1 = true;
 
-                if val == ' ' || val == ':' || val == '#' {
-                    continue 'val;
-                }
-
-                if val == '"' {
-                    continue 'val;
-                } else {
-                    value.push(val);
+                match val {
+                    ':' => continue 'val,
+                    '"' => { test2 = true; continue 'val; },
+                    ' ' => if test2 == false { continue 'val; } else { value.push(val) },
+                    '#' => break 'val,
+                    _ => value.push(val),
                 }
             }
 
