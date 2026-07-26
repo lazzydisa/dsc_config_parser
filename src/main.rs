@@ -69,8 +69,8 @@ fn parser(line: &str) -> (String, String) {
                 match val {
                     ':' => continue 'val,
                     '"' => { test2 = true; continue 'val; },
-                    ' ' => if test2 == false { continue 'val; } else { value.push(val) },
-                    '#' => break 'val,
+                    ' ' => if test2 == false { continue 'val; } else { value.push(val); },
+                    '#' => if test2 == false { break 'val; } else { value.push(val); },
                     _ => value.push(val),
                 }
             }
