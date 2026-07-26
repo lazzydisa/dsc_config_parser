@@ -49,10 +49,10 @@ fn parser(line: &str) -> (String, String) {
         else {
             // getting variable's name
             'var: for var in line.chars() { 
-                if var != ' ' && var != ':' && var != '#' {
-                    name.push(var);
-                } else {
-                    break 'var;
+                match var {
+                    ' ' => continue 'var,
+                    '#' | ':'  => break 'var,
+                    _ => name.push(var)
                 }
             }
 
