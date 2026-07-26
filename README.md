@@ -13,3 +13,7 @@ if let Ok(info) = string_from_file(&args[1]) {
     }
 }
 ```
+
+NOTE:
+    This code needed for reference only!
+    You need only `parser()` from main.rs
