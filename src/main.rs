@@ -41,41 +41,28 @@ fn parser(line: &str) -> (String, String) {
     let mut name = String::new();
     let mut value = String::new();
 
-    // skip an empty line
-    'main: for c in line.chars() {
-        if c == '\n' {
-            continue 'main;
+    for var in line.chars() { 
+        match var {
+            ' ' | '\t' => continue,
+            '#' | ':'  => break,
+            _ => name.push(var)
         }
-        else {
-            // getting variable's name
-            'var: for var in line.chars() { 
-                match var {
-                    ' ' | '\t' => continue 'var,
-                    '#' | ':'  => break 'var,
-                    _ => name.push(var)
-                }
-            }
+    }
 
-            // getting variable's value
-            let mut test1 = false;
-            let mut test2 = false;
-            'val: for val in line.chars() {
-                if val != ':' && test1 == false {
-                    continue 'val;
-                }
+    // getting variable's value
+    let mut test1 = false;
+    let mut test2 = false;
+    for val in line.chars() {
+        if val != ':' && test1 == false { continue; }
 
-                test1 = true;
+        test1 = true;
 
-                match val {
-                    ':' => continue 'val,
-                    '"' => if test2 == false { test2 = true; continue 'val; } else { break 'val; },
-                    ' ' => if test2 == false { continue 'val; } else { value.push(val); },
-                    '#' => if test2 == false { break 'val; } else { value.push(val); },
-                    _ => value.push(val),
-                }
-            }
-
-            break 'main;
+        match val {
+            ':' => continue,
+            '"' => if test2 == false { test2 = true; continue; } else { break; },
+            ' ' => if test2 == false { continue; } else { value.push(val); },
+            '#' => if test2 == false { break; } else { value.push(val); },
+            _ => value.push(val),
         }
     }
 
