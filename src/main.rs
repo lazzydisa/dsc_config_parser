@@ -41,6 +41,7 @@ fn parser(line: &str) -> (String, String) {
     let mut name = String::new();
     let mut value = String::new();
 
+    // getting variable's name
     for var in line.chars() { 
         match var {
             ' ' | '\t' => continue,
