@@ -1,4 +1,4 @@
-The parser for .dsc config files written in Odin by T117m
+The parser for .dsc config files rewritten in Odin by T117m
 
 The parser accepts a string after reading a file
 
