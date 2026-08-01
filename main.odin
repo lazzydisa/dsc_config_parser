@@ -106,9 +106,10 @@ parser :: proc(line: string) -> (name, value: string, error: ParsingError) {
 		}
 	}
 
-	dq_req, sq_req := false, 0
+	dq_req, sq_req := false, false
 	dq_check := false
 	runeAdded = false
+    closingSpace := false
 
 	value_loop: for r, i in line {
 		if i < columnIndex + 1 {
@@ -119,6 +120,12 @@ parser :: proc(line: string) -> (name, value: string, error: ParsingError) {
 			break value_loop
 		}
 
+        if closingSpace {
+            if r != ' ' && r != '\t' && r != '#' {
+                return "", "", SyntaxError("Unexpected symbol after value field")
+            }
+        }
+
 		switch r {
 		case '"':
 			if runeAdded && !dq_req {
@@ -126,8 +133,7 @@ parser :: proc(line: string) -> (name, value: string, error: ParsingError) {
 			}
 			if !dq_req && !dq_check {
 				dq_req = true
-			}
-			if dq_req {
+			} else if dq_req {
 				dq_req = false
 				dq_check = true
 			}
@@ -137,31 +143,27 @@ parser :: proc(line: string) -> (name, value: string, error: ParsingError) {
 				if err != nil {
 					return "", "", err
 				}
+                runeAdded = true
 			} else if runeAdded {
-				return "", "", SyntaxError("Unexpected space in the value field")
-			} else {
-				continue
+				closingSpace = true
 			}
 		case '\'':
 			if !dq_req {
 				return "", "", SyntaxError("Unexpected quote in the value field")
 			}
-			if sq_req == 0 {
-				sq_req += 1
-			}
-			if sq_req > 0 {
-				sq_req -= 1
-			}
+            sq_req = !sq_req
 			_, err := strings.write_rune(&b_value, r)
 			if err != nil {
 				return "", "", err
 			}
+            runeAdded = true
 		case '#':
-			if dq_req && sq_req > 0 {
+			if dq_req && sq_req {
 				_, err := strings.write_rune(&b_value, r)
 				if err != nil {
 					return "", "", err
 				}
+                runeAdded = true
 			} else {
 				break value_loop
 			}
@@ -176,6 +178,7 @@ parser :: proc(line: string) -> (name, value: string, error: ParsingError) {
 			if err != nil {
 				return "", "", err
 			}
+            runeAdded = true
 		}
 	}
 
@@ -185,7 +188,7 @@ parser :: proc(line: string) -> (name, value: string, error: ParsingError) {
 	if dq_req {
 		return "", "", SyntaxError("Unclosed value field")
 	}
-	if sq_req > 0 {
+	if sq_req {
 		return "", "", SyntaxError("Unclosed field in value")
 	}
 
