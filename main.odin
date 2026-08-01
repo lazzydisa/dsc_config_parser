@@ -37,7 +37,7 @@ Result :: struct {
 main :: proc() {
 	args := os.args
 
-	// a dynamic array that contains (name, value)
+	// a dynamic array that contains names, values and errors
 	results: [dynamic]Result
 
 	if s, err := string_from_file(&args[1]); err == nil {

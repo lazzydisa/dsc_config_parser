@@ -1,19 +1,29 @@
-The parser for .dsc config files written on Rust by me
+The parser for .dsc config files written in Odin by T117m
 
-The parser accepts a slice of the String that returned by reading a file
+The parser accepts a string after reading a file
 
-You need to collect result of parsing to Vec<(String, String)>:
-```
-let mut vec: Vec<(String, String)> = Vec::new();
+You may want to collect result of parsing in a dynamic array of the special Result type:
+```odin
+// a dynamic array that contains names, values and errors
+results: [dynamic]Result
 
-if let Ok(info) = string_from_file(&args[1]) {
-    for line in info.lines() {
-        let r = parser(line);
-        vec.push(r);
+if s, err := string_from_file(&args[1]); err == nil {
+    if lines, err := strings.split_lines(s); err == nil {
+        for line in lines {
+            name, value, err := parser(line)
+            res := Result{name, value, err}
+            append(&results, res)
+        }
+    } else {
+        fmt.println(err)
+        return
     }
+} else {
+    fmt.println(err)
+    return
 }
 ```
 
 NOTE:
-    This code needed for reference only!
-    You need only `parser()` from main.rs
+    This code is for reference only!
+    You need only `parser()` from main.odin
