@@ -42,8 +42,10 @@ fn parser(line: &str) -> (String, String) {
     let mut value = String::new();
 
     // getting variable's name
-    for var in line.chars() { 
+    let mut end = false;
+    for var in line.chars() {
         match var {
+            '"' | '\'' => continue, // don't use that characters in names please
             ' ' | '\t' => continue,
             '#' | ':'  => break,
             _ => name.push(var)
@@ -53,17 +55,35 @@ fn parser(line: &str) -> (String, String) {
     // getting variable's value
     let mut test1 = false;
     let mut test2 = false;
+    let mut c_test = 'x';
     for val in line.chars() {
         if val != ':' && test1 == false { continue; }
 
         test1 = true;
 
         match val {
-            ':' => continue,
-            '"' => if test2 == false { test2 = true; continue; } else { break; },
-            ' ' => if test2 == false { continue; } else { value.push(val); },
-            '#' => if test2 == false { break; } else { value.push(val); },
-            _ => value.push(val),
+            ':'  => continue,
+            '"'  => if c_test != '\'' {
+                if test2 == false {
+                    test2 = true;
+                    c_test = '"';
+                    continue;
+                } else {
+                    break;
+                }
+            } else { value.push(val); },
+            '\'' => if c_test != '"' {
+                if test2 == false { 
+                    test2 = true;
+                    c_test = '\'';
+                    continue;
+                } else {
+                    break;
+                }
+            } else { value.push(val); },
+            ' '  => if test2 == false { continue; } else { value.push(val); },
+            '#'  => if test2 == false { break; } else { value.push(val); },
+            _    => value.push(val),
         }
     }
 

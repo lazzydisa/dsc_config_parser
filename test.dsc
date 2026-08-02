@@ -10,3 +10,5 @@ test4: "test of '#' "
     test5: ?
 	test6: "test for tabulation"
 test7:      "sasI"
+"test8": dddddd
+'test9': 'test of the "#"'
