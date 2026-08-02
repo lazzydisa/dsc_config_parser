@@ -38,8 +38,7 @@ fn main() {
 
 // parser() gets &str from the file that sliced on lines()
 fn parser(line: &str) -> (String, String) {
-    let mut name = String::new();
-    let mut value = String::new();
+    let (mut name, mut value) = (String::new(), String::new());
 
     // getting variable's name
     for var in line.chars() {
@@ -52,9 +51,7 @@ fn parser(line: &str) -> (String, String) {
     }
 
     // getting variable's value
-    let mut test1 = false;
-    let mut test2 = false;
-    let mut c_test = 'x';
+    let (mut test1, mut test2, mut c_test) = (false, false, 'x');
     for val in line.chars() {
         if val != ':' && test1 == false { continue; }
 
