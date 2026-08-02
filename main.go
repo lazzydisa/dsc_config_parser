@@ -51,7 +51,7 @@ name_loop:
 		}
 	}
 
-	test1, test2 := false, false
+	test1, test2, test3 := false, false, false
 
 value_loop:
 	for _, r := range line {
@@ -72,10 +72,13 @@ value_loop:
 				break value_loop
 			}
 		case ' ':
-			if !test2 {
+			if !test2 && !test3 {
 				continue value_loop
-			} else {
+			} else if test2 {
+				test3 = true
 				b_val.WriteRune(r)
+			} else {
+				break value_loop
 			}
 		case '#':
 			if !test2 {
@@ -84,6 +87,7 @@ value_loop:
 				b_val.WriteRune(r)
 			}
 		default:
+			test3 = true
 			b_val.WriteRune(r)
 		}
 	}
