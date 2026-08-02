@@ -42,7 +42,6 @@ fn parser(line: &str) -> (String, String) {
     let mut value = String::new();
 
     // getting variable's name
-    let mut end = false;
     for var in line.chars() {
         match var {
             '"' | '\'' => continue, // don't use that characters in names please
